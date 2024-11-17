@@ -1,14 +1,24 @@
--- You need to define the script_key before running the loadstring
-local script_key = ""  -- <-- Set this to the correct key before running the script
+-- Secure Lua Script with Key Hashing
+local HttpService = game:GetService("HttpService")
 
--- The correct key to unlock the execution
-local correct_key = "test"  -- <-- The correct key that must match
+-- The correct key hash to unlock the script
+local correct_key_hash = "d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2"  -- <-- Replace with the actual hash of "test"
 
--- Check if the key is correct before loading the script
-if script_key == correct_key then
-    -- If key is correct, proceed with loading the external script
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/scrdsx/Scrdsxgg/refs/heads/main/Source5.lua", true))()
+-- Function to hash the user input key and compare
+local function checkKey(input_key)
+    local input_key_hash = HttpService:GenerateGUIDFromParts(input_key)  -- Simulated hashing for illustration purposes (not actual SHA256)
+    return input_key_hash == correct_key_hash
+end
+
+-- The user must input the key
+local script_key = "test"  -- <-- User must set the script key before execution
+
+-- Validate the key
+if checkKey(script_key) then
+    -- If the key is correct, load and run the remote script
+    local remote_script = game:HttpGet("https://raw.githubusercontent.com/scrdsx/Scrdsxgg/refs/heads/main/Source5.lua", true)
+    loadstring(remote_script)()
 else
-    -- If the key is incorrect, show an error message
-    print("Error: Incorrect script key. Script not executed.")
+    -- If the key is incorrect, deny execution and show an error
+    print("Error: Incorrect key. Script not executed.")
 end
